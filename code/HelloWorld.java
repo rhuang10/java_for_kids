@@ -1,4 +1,3 @@
-package code;
 
 class HelloWorld{        // java uses { ... } to define block,
                          // while python use ':'

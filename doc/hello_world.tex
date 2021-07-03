@@ -11,8 +11,12 @@
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myblue}{rgb}{0.68,0.85,0.90}
+\definecolor{myyellow}{rgb}{1,1,0.87}
 \definecolor{lightgray}{rgb}{0.9,0.9,0.9}
 \linespread{1.25}
+\usepackage{tabularx}
+\usepackage{tablestyles}
 \lstset{ 
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
   basicstyle=\footnotesize,        % the size of the fonts that are used for the code
@@ -25,8 +29,7 @@
   extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
   firstnumber=1,                % start line enumeration with line 1000
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-  keywordstyle=\color{blue},       % keyword style
-  language=Octave,                 % the language of the code
+  keywordstyle=\color{red},       % keyword style
   morekeywords={*,...},            % if you want to add more keywords to the set
   numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=5pt,                   % how far the line-numbers are from the code
@@ -38,14 +41,23 @@
   stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
   stringstyle=\color{mymauve},     % string literal style
   tabsize=2,	                   % sets default tabsize to 2 spaces
-  upquote=true,
-  backgroundcolor=\color{lightgray}
+  upquote=true
 }
 
-\newcommand{\pythonfile}[1]{\lstinputlisting[language=Python, title=Python]{#1}}
-\newcommand{\javafile}[1]{\lstinputlisting[language=Java, title=Java]{#1}}
+\newcommand{\pythonfile}[1]{\lstinputlisting[language=Python,backgroundcolor=\color{myblue}]{#1}}
+\newcommand{\javafile}[1]{\lstinputlisting[language=Java, backgroundcolor=\color{myyellow}]{#1}}
+\newcommand{\jinline}[1]{\lstinline[language=Java, backgroundcolor=\color{myyellow}]{#1}}
+\newcommand{\pyinline}[1]{\lstinline[language=Python, backgroundcolor=\color{myblue}]{#1}}
+\lstnewenvironment{jcode}[0]{ \lstset{language=Java,numbers=none,backgroundcolor=\color{myyellow}}}{}
+\lstnewenvironment{pycode}[0]{ \lstset{language=Python,numbers=none,backgroundcolor=\color{myblue}}}{}
+\lstnewenvironment{tcode}[0]{ \lstset{language=Bash,numbers=none, backgroundcolor=\color{lightgray}}}{}
 
-\begin{document}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{exercise}[theorem]{Exercise}
+
+\newcommand{\exinline}[1]{(\refstepcounter{theorem}Exercise~\thetheorem\label{#1})}
+\begin{document} 
+\section{Hello World} 
 Let us begin with the simple \verb|hello world|.
 \pythonfile{../code/helloworld.py}
 The python code is a little bit ``unusual'', compared to what you have typically done.  We define a function \verb|main| and then call it if the script is run. 
@@ -58,39 +70,130 @@ Java vs Python
     \item Python recognises line break as end of the statement. Java uses \verb|;| to end the statement.
 \end{enumerate}
 Conceptually, you can write the \verb|HelloWorld.java| as
-\begin{lstlisting}[language=Java, numbers=none]
+\begin{jcode}
 class HelloWorld{public static void main(String[] args){System.out.println("Hello world");}}
-\end{lstlisting}
+\end{jcode}
 But really? It is too hard to understand, especially when the code becomes longer and longer.
 
 A more substle and more important between Java and Python is that, Java is pure object-oriented. Evil Java king does not allow the verb slavers (\verb|method|s) show in any public domain without a noun master (\verb|class|). Therefore, 
-\begin{lstlisting}[language=Java, numbers=none]
+\begin{jcode}
 class HelloWorld{. . .
 }
-\end{lstlisting}
+\end{jcode}
 is required for Java to compile the code, though it looks like useless.
 
 
 \doublebox{%
 \begin{minipage}{\textwidth}
    
-    \textbf{if \_\_name\_\_ == " \_\_main\_\_"} \newline
+    \lstinline[language=Python]{if __name__ == "__main__"} \newline
 
 Python uses file name as module name. Therefore, one can reuse the function \verb|main| by
-\begin{lstlisting}[language=Python, numbers=none]
+\begin{pycode}
 import helloworld
 helloworld.main()
-\end{lstlisting}
+\end{pycode}
 
 When Python does \verb|import|, it runs all the scripts define in \verb|hello_world.py| by default. If we code the \verb|helloworld.py| like the following,
-\begin{lstlisting}[language=Python, numbers=none]
+\begin{pycode}
 def main():
     # do something
 main()
-\end{lstlisting}
+\end{pycode}
 \verb|main()| in the last line would run when anyone does \verb|import helloworld|. In most cases, this is not what we want. \verb|if __name__ == '__main__'| prevents this from happening.
 \end{minipage}%
 }
+
+Run python code in a terminal,
+\begin{tcode}
+  python hello_world.py  
+\end{tcode}
+
+Run java code in a terminal
+\begin{enumerate}
+    \item Compile the Java code
+        \begin{tcode}
+        $ javac HelloWorld.java
+        \end{tcode}
+    \item Check the compilation result
+        \begin{tcode}
+        $ ls
+        \end{tcode}
+        You will see there is a new file name \verb|HelloWorld.class| showing up.
+    \item Run program
+        \begin{tcode}
+        $ java HelloWorld
+        \end{tcode}
+\end{enumerate}
+
+Why compilation language?
+\begin{itemize}
+    \item It is typically faster than script language.
+\end{itemize}
+
+\begin{exercise}
+    \label{ex:java.hello}
+    Change the \verb|HelloWorld| java code, line 5 to
+    \begin{jcode}
+        System.out.println("Hello Sophie!");
+    \end{jcode}
+    Compile and run the java code in a terminal.
+\end{exercise}
+
+\section{Data Types}
+\begin{table}
+    \tablestyle[sansbold]
+    \begin{tabular}{llp{0.8\textwidth}}
+        \theadstart
+    Data Type&Size&Description\\
+    \tbody
+byte&1 byte&Stores whole numbers from -128 to 127\\
+short&2 bytes&Stores whole numbers from -32,768 to 32,767\\
+int&4 bytes&Stores whole numbers from -2,147,483,648 to 2,147,483,647\\
+long&8 bytes&Stores whole numbers from -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807\\
+float&4 bytes&Stores fractional numbers. Sufficient for storing 6 to 7 decimal digits\\
+double&8 bytes&Stores fractional numbers. Sufficient for storing 15 decimal digits\\
+boolean&1 bit&Stores true or false values\\
+char&2 bytes&Stores a single character/letter or ASCII values\\
+\tend
+    \end{tabular}
+    \caption{Java Primitive data types}
+    \label{tab:j.prim.type}
+\end{table}
+Java data types are divided two groups:
+\begin{itemize}
+    \item Primitive data types - includes \jinline{byte, short, int, long, float, double, boolean} and \jinline{char}. Tabel~\ref{tab:j.prim.type} shows the primitive data types and the stored value description.
+    \item Non-primitive data types - such as String, Arrays and  Classes (you will learn more about these in a later chapter).
+\end{itemize}
+The ways that Java treats primitive data types and no-primitive data types are very different. We will discuss this once we are talking about class. 
+
+\javafile{../code/DataTypeExample.java}
+\pythonfile{../code/data_type_example.py}
+Notice that python also has similar data types: \pyinline{int, float, bool} and \pyinline{str}. 
+\begin{itemize}
+    \item Java language is designed to enforce type safety. A variable must be declared with a type before you can use it. In most cases, you are not allowed to assign a value with different type to this variable.
+    \item Python is dynamically typed language. The type of a variable can be changed by the new assigned value.
+\end{itemize}
+
+Why type safty?
+\pythonfile{../code/type_safty.py}
+
+
+
+\begin{exercise}
+    How to declare a variable in Java?   
+\end{exercise}
+
+\begin{exercise}
+    \label{ex:java.assign}
+    Can I assign a float value to a integer variable in Java? Why?
+\end{exercise}
+
+\begin{exercise}
+    \label{ex:python.assign}
+    Can I assign a float value to a integer variable in Python? Why?
+\end{exercise}
+
 
 \end{document}
 
